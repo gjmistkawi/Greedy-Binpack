@@ -31,12 +31,14 @@ def first_fit(bin_size, item_list):
 def first_fit_regular(bin_size, item_list):
     bin_count = first_fit(bin_size, item_list)
     print("First Fit: " + str(bin_count) + ",", end=' ')
+    return bin_count
 
 #orders by decreasing size, and then sorts by first available bin
 def first_fit_decreasing(bin_size, item_list):
     item_list.sort(reverse=True)
     bin_count = first_fit(bin_size, item_list)
     print("First Fit Descreasing: " + str(bin_count) + ",", end=' ')
+    return bin_count
 
 #sorts items by finding bin with least space left after item placed inside
 def best_fit(bin_size, item_list):
@@ -65,23 +67,35 @@ def best_fit(bin_size, item_list):
             new_bin.holdings = item
             bin_list.append(new_bin)
     print("Best Fit: " + str(len(bin_list)))
+    return len(bin_list)
 
-
+def stat_analysis(stats):
+    print("\nNumber of smallest bins per algorithm ----------")
+    print("First Fit: " + str(stats[0]))
+    print("First Fit Decreasing: " + str(stats[1]))
+    print("Best Fit: " + str(stats[2]))
+    print()
 
 def main(file_name):
     lines = open(file_name).read().splitlines()         #read in file
     test_count = int(lines[0])                          #first line is # of tests
     current_test = 0
+    stats = [0,0,0]
     while current_test < test_count:
         bin_size = int(lines[(current_test*3+1)])       #every test takes 3 lines, this grabs 
         items = lines[(current_test*3+3)]               #each tests data from the parsed file
         item_list = [int(item) for item in items.split()]
         current_test += 1
-
+        current_stat = []
+        
         print("Test Case " + str(current_test) + " ->", end=" ")
-        first_fit_regular(bin_size, item_list)
-        first_fit_decreasing(bin_size, item_list[:])    #sending a copy of the item list so original remains in given order
-        best_fit(bin_size, item_list)
+        current_stat.append(first_fit_regular(bin_size, item_list))
+        current_stat.append(first_fit_decreasing(bin_size, item_list[:]))    #sending a copy of the item list so original remains in given order
+        current_stat.append(best_fit(bin_size, item_list))
+        stat = current_stat.index(min(current_stat))
+        stats[stat] += 1
+    stat_analysis(stats)
+
 
 if __name__ == "__main__":
     main(sys.argv[1])
