@@ -9,7 +9,7 @@ class Bin:
         self.holdings = 0
 
 #sorts items into first available container
-def first_fit(bin_size, item_list):
+def first_fi_reg(bin_size, item_list):
     bin_list = [Bin(bin_size)]
     for item in item_list:
         for bin in bin_list:        #checks if each bin can fit the current item
@@ -26,9 +26,22 @@ def first_fit(bin_size, item_list):
     print("First Fit: " + str(len(bin_list)) + ",", end=' ')
 
 
-# def first_fit_decreasing(bin_size, item_list):
+def first_fit_decreasing(bin_size, item_list):
+    item_list.sort(reverse=True)
+    bin_list = [Bin(bin_size)]
+    for item in item_list:
+        for bin in bin_list:        #checks if each bin can fit the current item
+            if(item + bin.holdings <= bin.size):
+                bin.holdings += item
+                item = 0            #setting item to 0 if already added to a bin
+                break
+        
+        if(item != 0):              #add a new bin if item cant fit
+            new_bin = Bin(bin_size)
+            new_bin.holdings = item
+            bin_list.append(new_bin)
 
-#     print("First Fit Decreasing: " + bin_count, end=", ")
+    print("First Fit Descreasing: " + str(len(bin_list)) + ",", end=' ')
 
 
 # def best_fit(bin_size, item_list):
@@ -49,6 +62,7 @@ def main(file_name):
 
         print("Test Case " + str(current_test) + " ->", end=" ")
         first_fit(bin_size, item_list)
+        first_fit_decreasing(bin_size, item_list)
         print()
 
 
